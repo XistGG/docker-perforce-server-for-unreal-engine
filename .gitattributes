@@ -1,0 +1,5 @@
+# This is a text-only repository, everything is text
+* text
+
+# Never allow CR in our *.sh files! Always LF only
+*.sh text eol=lf
