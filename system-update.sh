@@ -9,12 +9,9 @@ if [ -f /root/.SystemUpdate.first ]; then
 fi
 
 cat <<__EOF
-
-system-update.sh
-
+system-update.sh:
   IsFirstTimeComplete=$IsFirstTimeComplete
   SYSTEM_UPGRADE=$SYSTEM_UPGRADE
-
 __EOF
 
 

@@ -3,12 +3,9 @@
 export NAME="${NAME:-p4depot}"
 
 cat <<__EOF
-
-run.sh
-
+run.sh:
   NAME=$NAME
   DATAVOLUME=$DATAVOLUME
-
 __EOF
 
 
