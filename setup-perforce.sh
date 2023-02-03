@@ -55,12 +55,13 @@ EOF
 
 if [ "$FRESHINSTALL" = "1" ]; then
 
+    echo "First time installation, setting up defaults for p4 user, group and protect tables"
+
     # Download the latest XistGG typemap
     wget -qO - https://raw.githubusercontent.com/XistGG/Perforce-Setup/main/typemap.txt \
-        >> /root/p4-typemap.txt
+        > /root/p4-typemap.txt
 
     ## Load up the default tables
-    echo >&2 "First time installation, setting up defaults for p4 user, group and protect tables"
     p4 user -i < /root/p4-user.txt
     p4 group -i < /root/p4-user-group.txt
     p4 protect -i < /root/p4-protect.txt
