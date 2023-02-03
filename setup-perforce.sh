@@ -1,8 +1,14 @@
 #!/bin/bash
 set -e
 export NAME="${NAME:-p4depot}"
-export CASE_INSENSITIVE="${CASE_INSENSITIVE:-0}"
+export CASE_INSENSITIVE="${CASE_INSENSITIVE:-1}"
 export P4ROOT="${DATAVOLUME}/${NAME}"
+
+cat <<__EOF
+setup-perforce.sh:
+  CASE_INSENSITIVE=$CASE_INSENSITIVE
+  P4ROOT=$P4ROOT
+__EOF
 
 if [ ! -d $DATAVOLUME/etc ]; then
     echo >&2 "First time installation, copying configuration from /etc/perforce to $DATAVOLUME/etc and relinking"
@@ -48,11 +54,29 @@ $P4PASSWD
 EOF
 
 if [ "$FRESHINSTALL" = "1" ]; then
+
+    # Download the latest XistGG typemap
+    wget -qO - https://raw.githubusercontent.com/XistGG/Perforce-Setup/main/typemap.txt \
+        >> /root/p4-typemap.txt
+
     ## Load up the default tables
     echo >&2 "First time installation, setting up defaults for p4 user, group and protect tables"
-    p4 user -i < /root/p4-users.txt
-    p4 group -i < /root/p4-groups.txt
+    p4 user -i < /root/p4-user.txt
+    p4 group -i < /root/p4-user-group.txt
     p4 protect -i < /root/p4-protect.txt
+
+    # disable automatic user account creation
+    p4 configure set lbr.proxy.case=1
+
+    # disable unauthorized viewing of Perforce user list
+    p4 configure set run.users.authorize=1
+
+    # disable unauthorized viewing of Perforce config settings
+    p4 configure set dm.keys.hide=2
+
+    # configure typemap
+    p4 typemap -i < /root/p4-typemap.txt
+
 fi
 
 echo "   P4USER=$P4USER (the admin user)"
