@@ -3,9 +3,9 @@
 FROM ubuntu:jammy
 MAINTAINER Xist.GG <xist@xist.gg>
 
-# SYSTEM_UPDATE=(1|0)
+# SYSTEM_UPGRADE=(1|0)
 # Whether or not to update the base Ubuntu system on startup
-ENV SYSTEM_UPDATE 0
+ENV SYSTEM_UPGRADE 0
 
 # setenv for setup-perforce.sh, we want CASE INSENSITIVE filenames for Perforce
 # (used by setup-perforce.sh)
