@@ -13,9 +13,9 @@
 #               this user should use native LDAP authentication.
 #  Reviews:     Listing of depot files to be reviewed by user.
 
-User:	p4admin
+User:	admin
 
-Email:	p4admin@perforce
+Email:	admin@perforce
 
 Update:	2015/02/01 13:38:29
 
