@@ -12,28 +12,50 @@ Based on Ubuntu `jammy` which should be relatively stable.
 
 ## Usage
 
+
+### Build Image
+
+If you are deploying your container on the network, make sure you give it
+your public key so you can ssh into it as user `perforce` using that key.
+
 ```powershell
-# with this repo as current directory
+# cd into this Git repo clone directory to build
 docker build . -t=p4-xist `
   --build-arg PUBLIC_SSH_KEY="Your Public Key Here"
 ```
 
 
+### Run Container
+
+In this example we expose ssh port `22` in addition to p4 port `1666`.
+Local port is 42k, obviously.  `;)`
+
+You'll need to set the appropriate names and password.
+
 ```powershell
 # after having built the image, run a container with ENV
 docker run `
+  --env=P4PASSWD="Your admin P4 Password Here" `
+  --hostname=docker-p4 `
+  --env=NAME=XistP4 `
   -p 42022:22 `
   -p 42666:1666 `
-  --env=P4PASSWD="Your admin P4 Password Here" `
-  --env=PUBLIC_SSH_KEY="Your Public Key Here if you want SSH to be enabled" `
-  --hostname=docker-p4 `
-  --env=NAME=xistp4 `
+  --env=SYSTEM_UPGRADE=0 `
+  --env=PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin `
   --env=DATAVOLUME=/data `
   --volume=/data `
-  --env=PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin `
   --runtime=runc `
   -d p4-xist:latest
 ```
+
+
+### Save Image
+
+```powershell
+# Save this image to the NAS
+docker save p4-xist -o \\NAS\Dev\Perforce\Docker\p4-xist.tar
+```
+
 
 ## Thanks
 
