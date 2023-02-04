@@ -52,9 +52,6 @@ EOF
 
   date > /root/.SystemUpdate.first
 
-  # FORCE SYSTEM_UPGRADE=1 for first time setup
-  SYSTEM_UPGRADE=1
-
 fi
 
 
@@ -63,17 +60,22 @@ fi
 ######################################################################
 
 # If we want to update, and we haven't yet updated, then update
-if [ "x$SYSTEM_UPGRADE" = "x1" ] && [ ! -f /root/.SystemUpdate.last ]; then
+if [ "x$SYSTEM_UPGRADE" = "x1" ]; then
 
-  apt-get -y update
+  if [ ! -f /root/.SystemUpgrade.complete ]; then
 
-  apt-get -y upgrade
+    apt-get -y update
+    apt-get -y upgrade
 
-  date > /root/.SystemUpdate.last
+    date > /root/.SystemUpgrade.complete
+    echo "Upgrade Complete: $(cat /root/.SystemUpgrade.complete)"
+  else
+
+    echo "Last Upgrade: $(cat /root/.SystemUpgrade.complete)"
+  fi
 
 else
 
   echo "Skipping System Upgrade..."
-  [ -f /root/.SystemUpdate.last ] && echo "Last Upgrade: $(cat /root/.SystemUpdate.last)"
 
 fi
