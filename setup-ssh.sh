@@ -1,6 +1,7 @@
 #!/bin/env bash
 # This must run AFTER perforce has been set up
 set -e
+P4HOME=/opt/perforce
 
 cat <<__EOF
 setup-ssh.sh:
@@ -16,16 +17,44 @@ if [ -z "$PUBLIC_SSH_KEY" ]; then
 else
   # $PUBLIC_SSH_KEY is NOT EMPTY, so configure ssh
 
-  P4HOME=/opt/perforce
+  ######################################################################
+  ##  Install SSH Authorized Keys
+  ######################################################################
 
-  install -d -m 0700 -o perforce -g perforce $P4HOME/.ssh
+  [ -d $P4HOME/.ssh ] || mkdir $P4HOME/.ssh
 
   echo "$PUBLIC_SSH_KEY" > $P4HOME/.ssh/authorized_keys
-  chown perforce:perforce $P4HOME/.ssh/authorized_keys
   chmod 600 $P4HOME/.ssh/authorized_keys
+
+  # Make sure perforce user owns its entire ~/.ssh dir
+  chown -R perforce:perforce $P4HOME/.ssh
+  chmod 700 $P4HOME/.ssh
+
+  ######################################################################
+  ##  Install SSH and Start sshd
+  ######################################################################
 
   apt-get -y install ssh
 
   service ssh start
+
+  ######################################################################
+  ##  When sshing in as perforce over the network, it's required
+  ##  to be able to sudo for server maintenance.
+  ######################################################################
+
+  # Install sudo
+  apt-get -y install sudo
+
+  # Add perforce user to sudo group
+  usermod -aG sudo perforce
+
+  # Allow perforce user to sudo without a password
+  cat > /etc/sudoers.d/perforce <<EOF
+perforce ALL=(ALL) NOPASSWD: ALL
+EOF
+
+  # Nobody should be able to change this but root
+  chmod 600 /etc/sudoers.d/perforce
 
 fi
