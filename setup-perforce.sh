@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/env bash
 set -e
 export NAME="${NAME:-p4depot}"
 export CASE_INSENSITIVE="${CASE_INSENSITIVE:-1}"
@@ -28,8 +28,8 @@ fi
 P4SSLDIR="$P4ROOT/ssl"
 
 for DIR in $P4ROOT $P4SSLDIR; do
-    mkdir -m 0700 -p $DIR
-    chown perforce:perforce $DIR
+    mkdir -m 0700 -p "$DIR"
+    chown perforce:perforce "$DIR"
 done
 
 if ! p4dctl list 2>/dev/null | grep -q $NAME; then
@@ -62,7 +62,8 @@ if [ "$FRESHINSTALL" = "1" ]; then
         > /root/p4-typemap.txt
 
     ## Load up the default tables
-    p4 user -i < /root/p4-user.txt
+    p4 user -i < /root/p4-admin-user.txt
+    p4 group -i < /root/p4-admin-group.txt
     p4 group -i < /root/p4-user-group.txt
     p4 protect -i < /root/p4-protect.txt
 

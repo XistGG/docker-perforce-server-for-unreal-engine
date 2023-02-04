@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/env bash
 set -e
 SYSTEM_UPGRADE="${SYSTEM_UPGRADE:-1}"
 
@@ -63,7 +63,7 @@ fi
 ######################################################################
 
 # If we want to update, and we haven't yet updated, then update
-if [ "x$SYSTEM_UPGRADE" = "x1" -a ! -f /root/.SystemUpdate.last ]; then
+if [ "x$SYSTEM_UPGRADE" = "x1" ] && [ ! -f /root/.SystemUpdate.last ]; then
 
   apt-get -y update
 
@@ -74,6 +74,6 @@ if [ "x$SYSTEM_UPGRADE" = "x1" -a ! -f /root/.SystemUpdate.last ]; then
 else
 
   echo "Skipping System Upgrade..."
-  echo "Last Upgrade: `cat /root/.SystemUpdate.last`"
+  [ -f /root/.SystemUpdate.last ] && echo "Last Upgrade: $(cat /root/.SystemUpdate.last)"
 
 fi
