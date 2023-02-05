@@ -13,14 +13,26 @@ Based on Ubuntu `jammy` which should be relatively stable.
 ## Usage
 
 
+```powershell
+# Set these as you wish
+$DockerTag = 'p4-xist'
+$P4InstanceName = 'P4Xist'
+$ContainerHostname = 'docker-p4'
+```
+
 ### Build Image
 
-If you are deploying your container on the network, make sure you give it
-your public key so you can ssh into it as user `perforce` using that key.
+If you give it an *(optional)* Public SSH Key on build, it will give this
+key access to the `perforce` user account, which can `sudo`.
+
+This effectively gives full `root` permission on the container to the key owner.
+
+If you omit this, `ssh` will not be installed and remote access and maintenance
+will not be possible.
 
 ```powershell
 # cd into this Git repo clone directory to build
-docker build . -t=p4-xist `
+docker build . -t=$DockerTag `
   --build-arg PUBLIC_SSH_KEY="Your Public Key Here"
 ```
 
@@ -28,32 +40,32 @@ docker build . -t=p4-xist `
 ### Run Container
 
 In this example we expose ssh port `22` in addition to p4 port `1666`.
-Local port is 42k, obviously.  `;)`
 
-You'll need to set the appropriate names and password.
+Local port is 42K, obviously.  `;)`
 
 ```powershell
 # after having built the image, run a container with ENV
 docker run `
-  --env=P4PASSWD="Your admin P4 Password Here" `
-  --hostname=docker-p4 `
-  --env=NAME=XistP4 `
+  --hostname=$ContainerHostname `
+  --env=NAME=$P4InstanceName `
   -p 42022:22 `
   -p 42666:1666 `
-  --env=SYSTEM_UPGRADE=0 `
   --env=PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin `
   --env=DATAVOLUME=/data `
   --volume=/data `
   --runtime=runc `
-  -d p4-xist:latest
+  -d ${DockerTag}:latest
 ```
+
+Note this uses the DEFAULT PASSWORD for the P4 `admin` user, so you will want to login and
+change it immediately.
 
 
 ### Save Image
 
 ```powershell
 # Save this image to the NAS
-docker save p4-xist -o \\NAS\Dev\Perforce\Docker\p4-xist.tar
+docker save $DockerTag -o \\NAS\Dev\Perforce\Docker\${DockerTag}.tar
 ```
 
 
