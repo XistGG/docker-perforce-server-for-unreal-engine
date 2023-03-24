@@ -70,11 +70,21 @@ if [ "$FRESHINSTALL" = "1" ]; then
     # disable automatic user account creation
     p4 configure set lbr.proxy.case=1
 
-    # disable unauthorized viewing of Perforce user list
+    # disable unauthorized viewing of Perforce user list and changes
     p4 configure set run.users.authorize=1
+    p4 configure set defaultChangeType=restricted
 
-    # disable unauthorized viewing of Perforce config settings
+    # disable unauthorized viewing of Perforce settings
+    p4 configure set dm.info.hide=1
     p4 configure set dm.keys.hide=2
+
+    # optimize net -- customize these based on your hardware
+    p4 configure set net.parallel.batch=32
+    p4 configure set net.parallel.max=16
+    p4 configure set net.parallel.threads=4
+    p4 configure set net.parallel.submit.threads=4
+    p4 configure set net.parallel.shelve.threads=4
+    p4 configure set net.tcpsize=2M
 
     # configure typemap
     p4 typemap -i < /root/p4-typemap.txt
