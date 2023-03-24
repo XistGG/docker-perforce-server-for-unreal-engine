@@ -71,7 +71,7 @@ docker save $DockerTag -o \\NAS\Dev\Perforce\Docker\${DockerTag}.tar
 
 ## Thanks
 
-Thanks to [froyok]()
+Thanks to [froyok](https://github.com/froyok/)
 for the excellent blog covering the topic of
 [How to Install P4D into a Docker Container]((https://www.froyok.fr/blog/2018-09-setting-up-perforce-with-docker-for-unreal-engine-4/)).
 
